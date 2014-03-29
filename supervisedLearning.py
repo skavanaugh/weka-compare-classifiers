@@ -20,7 +20,7 @@ runWekaExperiments = False # If you set this to True, make sure you have configu
 # from this list as long as you choose from the list of fields below.
 
 studies = ['Percent_incorrect', 'Elapsed_Time_training', 'Elapsed_Time_testing', 
-	'UserCPU_Time_training','UserCPU_Time_testing', 'F_measure', 'measureNumLeaves']
+	'UserCPU_Time_training','UserCPU_Time_testing', 'F_measure'] # , 'measureNumLeaves']
 
 #############################
 csvprefix = runExperiment.path_to_experiments + runExperiment.name_of_dataset + "_" + runExperiment.experiment
@@ -60,6 +60,33 @@ def average(strlist): # can blow up if len(l) == 0
 	l = map(float,strlist)
 	return (sum(l))/len(l)
 
+def getClassifierNickName(k):
+	
+	if runExperiment.experiment == "neural_nets":
+		nn_vals = ["1 HL=3 | 500 epochs", "2 HL=(3-3) | 200 epochs", "2 HL=(5-3) | 200 epochs", 
+			"1 HL=3 | 200 epochs", "1 HL=2 | 100 epochs", "1 HL=3 | 100 epochs"]
+		
+		nn_base = 'weka.classifiers.functions.MultilayerPerceptron '
+		nn_keys = ['-L 0.3 -M 0.2 -N 500 -V 0 -S 0 -E 20 -H 3', '-L 0.5 -M 0.2 -N 200 -V 0 -S 0 -E 20 -H \"3, 3\"',
+			'-L 0.3 -M 0.2 -N 200 -V 0 -S 0 -E 20 -H \"5, 3\"', '-L 0.3 -M 0.2 -N 200 -V 0 -S 0 -E 20 -H 3',
+			'-L 0.3 -M 0.2 -N 100 -V 0 -S 0 -E 20 -H 2', '-L 0.3 -M 0.2 -N 100 -V 0 -S 0 -E 20 -H 3']
+
+		nn_keys = [nn_base + x for x in nn_keys]
+
+		nn_dict = dict(zip(nn_keys, nn_vals))
+	
+		if k in nn_dict:
+			return nn_dict[k]
+		elif "5, 3" in k:  # hardcoded because having trouble recognizing this key
+			return nn_vals[2]
+		elif "3, 3" in k:  # hardcoded because having trouble recognizing this key
+			return nn_vals[1]
+		else:
+			return "Neural Network"
+
+	else:
+		return "Classifier"
+
 
 if runWekaExperiments:
 	runExperiment.generate_experiment_files()
@@ -96,7 +123,7 @@ for ii, s in enumerate(studies):
 	for key in dataDict:
 		# prepend name of classifier. eventually this should be a classifier nickname for graphing.
 		summaryDict[key]['AmtData'].append('')
-		summaryDict[key][s].append(key) # nickname
+		summaryDict[key][s].append(getClassifierNickName(key)) # nickname
 		size = len(dataDict[key]['AmtData']) / 9 # 9 for 10, 20, 30, ... , 90
 
 		for i in range(9):

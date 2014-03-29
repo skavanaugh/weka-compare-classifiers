@@ -16,8 +16,8 @@ import time
 # which make use of LibSVM, you need to point to both LibSVM.jar and libsvm.jar as is done below in 
 # path_to_libsvm.  This is not necessary for the other experiments.  
 
-name_of_dataset = 'bank'
-experiment = 'trees_and_boosted'
+name_of_dataset = 'spambase_scaled' #'spambase' #'bank'
+experiment = 'neural_nets' # 'trees_and_boosted'
 
 path_to_weka_jar = '/Users/Sylvan/weka-3-7-10/weka.jar'
 path_to_libsvm = '/Users/Sylvan/weka-3-7-10/libsvm.jar:/Users/Sylvan/wekafiles/packages/LibSVM/LibSVM.jar'
